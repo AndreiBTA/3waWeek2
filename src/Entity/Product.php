@@ -27,11 +27,11 @@ class Product
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Assert\Currency]
+//    #[Assert\Currency]
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Assert\DateTime]
+//    #[Assert\DateTime]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\OneToOne(inversedBy: 'product', cascade: ['persist', 'remove'])]
@@ -43,7 +43,7 @@ class Product
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Distributeur::class, inversedBy: 'products')]
-    #[Assert\Valid]
+//    #[Assert\Valid]
     private Collection $distributeurs;
 
     public function __construct()
