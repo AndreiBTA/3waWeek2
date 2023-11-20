@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}One product{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <p><a href="{{ path('app_products') }}">Go back</a></p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>CreatedAt</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

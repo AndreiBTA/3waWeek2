@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello index page!{% endblock %}
+
+{% block header %}
+    <p>Additional header content added in index</p>
+    <hr>
+{% endblock %}
+
+{% block body %}
+    <div class="row border">
+
+    </div>
+    <p>This is the index page. <a href="{{ path('app_products') }}">Go to all products</a></p>
+    <p>Go to :<a href="{{ path('app_products_add') }}">Create book</a></p><hr>
+
+    <hr>
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+{% endblock %}
