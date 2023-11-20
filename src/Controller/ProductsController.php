@@ -39,7 +39,7 @@ class ProductsController extends AbstractController
             return $this->redirectToRoute('app_products');
         }
 
-        return $this->render('products/add.html.twig', [
+        return $this->render('products/new.html.twig', [
             'form' => $form,
         ]);
     }

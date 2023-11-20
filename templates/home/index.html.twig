@@ -3,20 +3,15 @@
 {% block title %}Hello index page!{% endblock %}
 
 {% block header %}
-    <p>Additional header content added in index</p>
-    <hr>
 {% endblock %}
 
 {% block body %}
-    <div class="row border">
-
+    <div class="container">
+        <p>This is a random text just to fill the homepage</p>
+        <p>This is the index page. <a href="{{ path('app_products') }}">Go to product list</a></p>
+        <p>Go to : <a href="{{ path('app_products_add') }}">Create product</a></p><hr>
     </div>
-    <p>This is the index page. <a href="{{ path('app_products') }}">Go to all products</a></p>
-    <p>Go to :<a href="{{ path('app_products_add') }}">Create book</a></p><hr>
-
-    <hr>
 {% endblock %}
 
 {% block footer %}
-    {{ parent() }}
 {% endblock %}
