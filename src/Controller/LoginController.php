@@ -12,6 +12,10 @@ class LoginController extends AbstractController
     #[Route('/login', name: 'app_login')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
+        if($this->getUser()) {
+            $this->addFlash('danger', 'Already logged in');
+            return $this->redirectToRoute('app_home');
+        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
