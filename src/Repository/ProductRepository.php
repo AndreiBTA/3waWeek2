@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Category;
@@ -41,7 +43,6 @@ class ProductRepository extends ServiceEntityRepository
             ->orderBy('p.price', 'ASC')
             ->getQuery()
             ->getResult();
-
     }
 
     public function getProductsByCategory(Category $category): array

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
@@ -34,7 +36,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->roles = ['ROLE_USER'];
     }
 

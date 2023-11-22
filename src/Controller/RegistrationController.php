@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Utilisateur;
@@ -28,8 +30,9 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        if($this->getUser()) {
+        if ($this->getUser()) {
             $this->addFlash('danger', 'Already logged in');
+
             return $this->redirectToRoute('app_home');
         }
         $user = new Utilisateur();
@@ -58,6 +61,7 @@ class RegistrationController extends AbstractController
             );
             // do anything else you need here, like send an email
             $this->addFlash('info', 'Validate your account with the link received by mail');
+
             return $this->redirectToRoute('app_home');
         }
 

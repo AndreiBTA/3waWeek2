@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Distributeur;
@@ -14,7 +16,7 @@ class DistributeurType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Distributeur'
+                'label' => 'Distributeur',
             ])
         ;
     }

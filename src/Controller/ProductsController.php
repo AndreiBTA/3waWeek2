@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Category;
@@ -21,26 +23,24 @@ class ProductsController extends AbstractController
     #[Route('/', name: 'app_products')]
     public function showProducts(ProductRepository $productRepository): Response
     {
-
-
         return $this->render('products/index.html.twig', [
-//            'products' => $productRepository->findAll(),
+            //            'products' => $productRepository->findAll(),
             'products' => $productRepository->findBy([], ['createdAt' => 'DESC'], 9),
-//            'products' => $productRepository->getProductsBelowPrice(600),
-//            'products' => $productRepository->getProductsBetweenPrices(400, 1000),
-//                'products' => $productRepository->getProductsByCategory('Info'),
+            //            'products' => $productRepository->getProductsBelowPrice(600),
+            //            'products' => $productRepository->getProductsBetweenPrices(400, 1000),
+            //                'products' => $productRepository->getProductsByCategory('Info'),
         ]);
     }
 
     #[Route('/products-category', name: 'app_products_category')]
     public function showProductsByCategory(
-        Request            $request,
-        ProductRepository  $productRepository,
+        Request $request,
+        ProductRepository $productRepository,
         CategoryRepository $categoryRepository
-    ): Response
-    {
+    ): Response {
         $form = $this->createForm(CategoryType::class);
         $form->handleRequest($request);
+
         /* @var $category Category * */
         $category = $form->get('name')->getData();
 
@@ -48,36 +48,32 @@ class ProductsController extends AbstractController
         $formPrice->handleRequest($request);
         dump($formPrice);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->render('products/products_category.html.twig', [
                 'products' => $productRepository->getProductsByCategory($category),
                 'form' => $form,
-//                'form_price' => $formPrice,
+                //                'form_price' => $formPrice,
             ]);
         }
-//        if ($formPrice->isSubmitted() && $formPrice->isValid()) {
-//            $data = $formPrice->getData();
-//            $priceMin = $data['priceMin'];
-//            $priceMax = $data['priceMax'];
-//            return $this->render('products/products_category.html.twig', [
-//                'products' => $productRepository->getProductsBetweenPrices($priceMin, $priceMax),
-//                'form_price' => $formPrice,
-//            ]);
-//        }
-
+        //        if ($formPrice->isSubmitted() && $formPrice->isValid()) {
+        //            $data = $formPrice->getData();
+        //            $priceMin = $data['priceMin'];
+        //            $priceMax = $data['priceMax'];
+        //            return $this->render('products/products_category.html.twig', [
+        //                'products' => $productRepository->getProductsBetweenPrices($priceMin, $priceMax),
+        //                'form_price' => $formPrice,
+        //            ]);
+        //        }
 
         return $this->render('products/products_category.html.twig', [
             'products' => $productRepository->findAll(),
             'form' => $form,
         ]);
-
     }
 
     #[Route('/filtered', name: 'app_products_books')]
     public function showFilteredProducts(ProductRepository $productRepository): Response
     {
-
         return $this->render('products/index.html.twig', [
             'products' => $productRepository->findBy(['category' => 92], ['price' => 'DESC']),
         ]);
@@ -86,13 +82,12 @@ class ProductsController extends AbstractController
     #[Route('/show-one', name: 'app_products_show_one')]
     public function showOneByField(ProductRepository $productRepository): Response
     {
-//        dd($productRepository->findOneBy(['id' => 43]));
+        //        dd($productRepository->findOneBy(['id' => 43]));
 
         return $this->render('products/index.html.twig', [
             'products' => $productRepository->findOneBy(['name' => 'dicta']),
         ]);
     }
-
 
     #[Route('/new', name: 'app_products_new')]
     public function addProducts(Request $request, EntityManagerInterface $em): Response

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Utilisateur;
@@ -19,7 +21,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Your email'
+                'label' => 'Your email',
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'label' => 'Accept the terms',

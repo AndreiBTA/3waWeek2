@@ -33,4 +33,3 @@ class ProductPriceRangeType extends AbstractType
         ]);
     }
 }
-
