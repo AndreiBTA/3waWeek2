@@ -7,11 +7,10 @@
     {% if products|length > 0 %}
     <div class="row mb-5 justify-content-around justify-content-md-start">
         {% for product in products %}
-            <div class="col-5">
+            <div class="col-5 my-2">
                 <article class="bg-white rounded shadow">
                     <div class="rounded-rop hover-zoom">
                         <a href="{{ path('app_product_show', {id : product.id}) }}">Image to add</a>
-                        {#                        image here #}
                     </div>
 
                     <div class="p-3">
