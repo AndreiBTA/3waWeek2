@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Products with category{% endblock %}
+
+
+
+
+{% block body %}
+    <div class="col-3">
+        {{ form_start(form) }}
+        {{ form_end(form) }}
+    </div>
+
+{#    <div class="col-3">#}
+{#    {{ form_start(form_price) }}#}
+{#    {{ form_end(form_price) }}#}
+{#</div>#}
+
+    <h1 class="text-muted">Product list</h1>
+    {% if products|length > 0 %}
+        <div class="row mb-5 justify-content-around justify-content-md-start">
+            {% for product in products %}
+                <div class="col-4 my-2">
+                    <article class="bg-white rounded shadow">
+                        <div class="rounded-rop hover-zoom">
+                            <a href="{{ path('app_product_show', {id : product.id}) }}">Image to add</a>
+                        </div>
+
+                        <div class="p-3">
+                            <h2 class="h4"><a href="{{ path('app_product_show', {id : product.id}) }}"
+                                              class="text-decoration-none">{{ product.name }}</a></h2>
+                            <p class="text-truncate">{{ product.description }}</p>
+                            <p>Price : {{ product.price }}</p>
+                            <p>Category: {{ product.category }}</p>
+                            <p class="text-muted">Created at by...to add</p>
+                            <a href="{{ path('app_product_show', {id : product.id}) }}" class="btn btn-primary">Read
+                                more</a>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="mt-5 text-center text-muted">No products added. <a href="{{ path('app_product_new') }}" class="text-decoration-none">Add one right now</a></p>
+    {% endif %}
+{% endblock %}
