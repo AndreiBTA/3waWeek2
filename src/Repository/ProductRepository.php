@@ -59,13 +59,14 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function findPhotos(int $id = 0): Product|null|array
+    public function findPhotosForProduct(Product $product)
     {
-        $qb = $this->createQueryBuilder('product')
+        return $this->createQueryBuilder('product')
+            ->select('product', 'photo')
             ->leftJoin('product.photos', 'photo')
-            ->addSelect('photo');
-        return $qb
+            ->where('product = :product')
+            ->setParameter('product', $product)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 }
