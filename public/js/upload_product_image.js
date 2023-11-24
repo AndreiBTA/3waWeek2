@@ -29,9 +29,8 @@ const addPhotoToCollection = (e) => {
     document.querySelectorAll('.btn-delete-photo').forEach(button => button.addEventListener('click', (e) => e.currentTarget.parentElement.remove()));
 }
 
-const buttonsAddProductPhotos = document.querySelectorAll('.btn-add-product-photo');
-console.log(buttonsAddProductPhotos);
-for(const button of buttonsAddProductPhotos) {
-    button.addEventListener('click', addPhotoToCollection);
-}
+const buttonAddProductPhotos = document.querySelector('.btn-add-product-photo');
+console.log(buttonAddProductPhotos);
+buttonAddProductPhotos.addEventListener('click', addPhotoToCollection);
+
 

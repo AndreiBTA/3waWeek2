@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Photo;
 use App\Entity\Product;
 use App\Form\CategoryType;
 use App\Form\ProductType;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use App\Services\ProductPhotoUploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,9 +27,11 @@ class ProductsController extends AbstractController
     #[Route('/', name: 'app_products')]
     public function showProducts(ProductRepository $productRepository): Response
     {
+        dump($productRepository->findAll());
+
         return $this->render('products/index.html.twig', [
-            //            'products' => $productRepository->findAll(),
-            'products' => $productRepository->findBy([], ['createdAt' => 'DESC'], 9),
+            'products' => $productRepository->findAll(),
+            //            'products' => $productRepository->findBy([], ['createdAt' => 'DESC'], 9),
             //            'products' => $productRepository->getProductsBelowPrice(600),
             //            'products' => $productRepository->getProductsBetweenPrices(400, 1000),
             //                'products' => $productRepository->getProductsByCategory('Info'),
@@ -90,7 +96,7 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/new', name: 'app_products_new')]
-    public function addProducts(Request $request, EntityManagerInterface $em): Response
+    public function addProducts(Request $request, EntityManagerInterface $em, ProductPhotoUploadService $productPhotoUploadService): Response
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
@@ -98,8 +104,33 @@ class ProductsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photos = $request->files->get('product')['photos'] ?? null; // array
+            if (null === $photos) {
+                $this->addFlash('danger', 'Every product need to have at least one photo');
+
+                return $this->redirectToRoute('app_products_new');
+            }
+            foreach ($photos as $photo) {
+                foreach ($photo as $onePhoto) {
+                    $new_photos = new Photo();
+                    if ($onePhoto instanceof UploadedFile) {
+                        try {
+                            $new_photo = $productPhotoUploadService->uploadImage($onePhoto);
+                            $new_photos->setName($new_photo);
+                            $product->addPhoto($new_photos);
+                        } catch (FileException $e) {
+                            throw new FileException($e->getMessage());
+                        }
+                    } else {
+                        $this->addFlash('danger', 'Error when uploading files');
+                    }
+                }
+            }
+
             $em->persist($product);
             $em->flush();
+            //            dd($product);
+
             $this->addFlash('success', 'Product added');
 
             return $this->redirectToRoute('app_products');
@@ -113,21 +144,46 @@ class ProductsController extends AbstractController
     #[Route('/{id}/show', name: 'app_product_show')]
     public function showProduct(Product $product): Response
     {
+        dump($product);
+
         return $this->render('products/show.html.twig', [
             'product' => $product,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $em): Response
+    public function edit(Request $request, Product $product, EntityManagerInterface $em, ProductPhotoUploadService $productPhotoUploadService): Response
     {
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photos = $request->files->get('product')['photos'] ?? null; // array
+            if (null === $photos) {
+                $this->addFlash('danger', 'Every product need to have at least one photo');
+
+                return $this->redirectToRoute('app_products_new');
+            }
+            foreach ($photos as $photo) {
+                foreach ($photo as $onePhoto) {
+                    $new_photos = new Photo();
+                    if ($onePhoto instanceof UploadedFile) {
+                        try {
+                            $new_photo = $productPhotoUploadService->uploadImage($onePhoto);
+                            $new_photos->setName($new_photo);
+                            $product->addPhoto($new_photos);
+                        } catch (FileException $e) {
+                            throw new FileException($e->getMessage());
+                        }
+                    } else {
+                        $this->addFlash('danger', 'Error when uploading files');
+                    }
+                }
+            }
+
             $em->flush();
 
-            $this->addFlash('info', 'Product updated');
+            $this->addFlash('success', 'Product added');
 
             return $this->redirectToRoute('app_products');
         }
