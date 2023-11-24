@@ -12,13 +12,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// //        "friendsofphp/php-cs-fixer": "^3.0",
-
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Product
 {
     use Timestampable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -46,12 +45,17 @@ class Product
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Distributeur::class, inversedBy: 'products')]
-    //    #[Assert\Valid]
+    #[Assert\Valid]
     private Collection $distributeurs;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Photo::class, cascade: ['persist'])]
+    #[Assert\Valid]
+    private Collection $photos;
 
     public function __construct()
     {
         $this->distributeurs = new ArrayCollection();
+        $this->photos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,6 +143,36 @@ class Product
     public function removeDistributeur(Distributeur $distributeur): static
     {
         $this->distributeurs->removeElement($distributeur);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Photo>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(Photo $photo): static
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos->add($photo);
+            $photo->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(Photo $photo): static
+    {
+        if ($this->photos->removeElement($photo)) {
+            // set the owning side to null (unless already changed)
+            if ($photo->getProduct() === $this) {
+                $photo->setProduct(null);
+            }
+        }
 
         return $this;
     }
