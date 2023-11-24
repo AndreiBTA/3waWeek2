@@ -9,6 +9,7 @@ use App\Entity\Distributeur;
 use App\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -44,6 +45,13 @@ class ProductType extends AbstractType
                 'class' => Distributeur::class,
                 'multiple' => true,
                 'choice_label' => 'name',
+            ])
+            ->add('photos', CollectionType::class, [
+                'entry_type' => PhotoType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'mapped' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Submit form',
