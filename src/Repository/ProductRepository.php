@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Category;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -51,6 +52,19 @@ class ProductRepository extends ServiceEntityRepository
             ->leftJoin('p.category', 'c')
             ->where('c.name = :name')
             ->setParameter('name', $category->getName())
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findPhotos(int $id = 0): Product|null|array
+    {
+        $qb = $this->createQueryBuilder('product')
+            ->leftJoin('product.photos', 'photo')
+            ->addSelect('photo');
+        return $qb
             ->getQuery()
             ->getResult();
     }

@@ -48,7 +48,7 @@ class Product
     #[Assert\Valid]
     private Collection $distributeurs;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Photo::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Photo::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     #[Assert\Valid]
     private Collection $photos;
 

@@ -13,6 +13,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Services\ProductPhotoUploadService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -142,20 +143,30 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/{id}/show', name: 'app_product_show')]
-    public function showProduct(Product $product): Response
+    public function showProduct(Product $product, ProductRepository $productRepository): Response
     {
         dump($product);
+        $photos = $productRepository->findPhotos($product->getId());
 
         return $this->render('products/show.html.twig', [
             'product' => $product,
+            'photos' => $photos,
         ]);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $em, ProductPhotoUploadService $productPhotoUploadService): Response
+    public function edit(Request $request, Product $product, EntityManagerInterface $em,
+                         ProductPhotoUploadService $productPhotoUploadService, ProductRepository $productRepository): Response
     {
+
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
+        $photos = $productRepository->findPhotos($product->getId());
+        dump($photos);
+//        $photos = $product->getPhotos();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $photos = $request->files->get('product')['photos'] ?? null; // array
@@ -191,6 +202,7 @@ class ProductsController extends AbstractController
         return $this->render('products/edit.html.twig', [
             'product' => $product,
             'form' => $form,
+            'photos' => $photos,
         ]);
     }
 
