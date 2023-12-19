@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Photo;
 use App\Entity\Product;
 use App\Form\CategoryType;
+use App\Form\CommentType;
 use App\Form\ProductType;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\ProductRepository;
 use App\Services\ProductPhotoUploadService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use function Symfony\Component\Clock\now;
 
 #[Route('/products')]
 class ProductsController extends AbstractController
@@ -187,15 +191,6 @@ class ProductsController extends AbstractController
                 //                'form_price' => $formPrice,
             ]);
         }
-        //        if ($formPrice->isSubmitted() && $formPrice->isValid()) {
-        //            $data = $formPrice->getData();
-        //            $priceMin = $data['priceMin'];
-        //            $priceMax = $data['priceMax'];
-        //            return $this->render('products/products_category.html.twig', [
-        //                'products' => $productRepository->getProductsBetweenPrices($priceMin, $priceMax),
-        //                'form_price' => $formPrice,
-        //            ]);
-        //        }
 
         return $this->render('products/products_category.html.twig', [
             'products' => $productRepository->findAll(),
@@ -235,5 +230,31 @@ class ProductsController extends AbstractController
     public function showProductsJson(): Response
     {
         return $this->render('products/products_json.html.twig');
+    }
+
+    #[Route('/{id}/product-details', name: 'app_product_details')]
+    public function showProductDetails(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Product $product,
+        CommentRepository $commentRepository): Response {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $comment->setProduct($product);
+            $product->addComment($comment);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Commend added');
+            return new JsonResponse(['success' => true]);
+        }
+
+        return $this->render('products/product_details.html.twig',  [
+            'product' => $product,
+            'form' => $form,
+            'comments' => $commentRepository->findBy(['id' => $product->getId()]),
+        ]);
     }
 }

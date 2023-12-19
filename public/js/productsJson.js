@@ -1,5 +1,5 @@
 const productParent = document.getElementById('products-parent');
-
+console.log('in productsJson')
 fetch('https://127.0.0.1:8000/products/products-json', {
     method: 'GET',
     headers: {
@@ -19,6 +19,5 @@ fetch('https://127.0.0.1:8000/products/products-json', {
         )
 
         productParent.innerHTML = carteProducts.join(' ');
-        // productParent.replaceChildren(carteProducts.join(' '));
     })
 .catch(error => console.log(error));
