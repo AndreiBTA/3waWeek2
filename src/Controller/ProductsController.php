@@ -18,9 +18,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/products')]
 class ProductsController extends AbstractController
@@ -28,6 +30,8 @@ class ProductsController extends AbstractController
     #[Route('/', name: 'app_products')]
     public function showProducts(ProductRepository $productRepository): Response
     {
+        dump($productRepository);
+
         return $this->render('products/index.html.twig', [
             'products' => $productRepository->findBy([], ['createdAt' => 'DESC'], 12),
         ]);
@@ -97,12 +101,13 @@ class ProductsController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $em,
+    public function edit(Request                   $request, Product $product, EntityManagerInterface $em,
                          ProductPhotoUploadService $productPhotoUploadService, ProductRepository $productRepository): Response
     {
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
         $photos = $productRepository->findPhotosForProduct($product)->getPhotos();
+        dump($photos);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $photos = $request->files->get('product')['photos'] ?? null; // array
@@ -157,7 +162,7 @@ class ProductsController extends AbstractController
         return $this->redirectToRoute('app_products');
     }
 
-    //Test Routes
+    // Test Routes
 
     #[Route('/products-category', name: 'app_products_category')]
     public function showProductsByCategory(
@@ -217,5 +222,18 @@ class ProductsController extends AbstractController
         ]);
     }
 
-    //End test routes
+    // End test routes
+    #[Route('/products-json', name: 'app_products_json')]
+    public function getProductsJson(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $products = $productRepository->findAll();
+        $productsToJson = $serializer->serialize($products, 'json', ['groups' => 'products']);
+        return new JsonResponse($productsToJson, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/products-json-show', name: 'app_products_json_show')]
+    public function showProductsJson(): Response
+    {
+        return $this->render('products/products_json.html.twig');
+    }
 }
