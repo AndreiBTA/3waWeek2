@@ -1,6 +1,6 @@
 const productParent = document.getElementById('products-parent');
 
-fetch('https://localhost:8000/products/products-json-show', {
+fetch('https://127.0.0.1:8000/products/products-json', {
     method: 'GET',
     headers: {
         'Content-type': 'application/json'
@@ -13,6 +13,7 @@ fetch('https://localhost:8000/products/products-json-show', {
         <div>
            <h2>${product.name}</h2>
            <p>${product.description}</p> 
+           <p>Price : ${product.price} €</p> 
          </div>
         `
         )
