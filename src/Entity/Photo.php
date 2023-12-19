@@ -21,6 +21,11 @@ class Photo
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'photos')]
     private ?Product $product = null;
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

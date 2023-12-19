@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -21,19 +22,22 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('products')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
+    #[Groups('products')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank]
+    #[Groups('products')]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    //    #[Assert\Currency]
+    #[Groups('products')]
     private ?float $price = null;
 
     #[ORM\OneToOne(inversedBy: 'product', cascade: ['persist', 'remove'])]
@@ -48,7 +52,7 @@ class Product
     #[Assert\Valid]
     private Collection $distributeurs;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Photo::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Photo::class, cascade: ['persist', 'remove'])]
     #[Assert\Valid]
     private Collection $photos;
 
@@ -56,6 +60,11 @@ class Product
     {
         $this->distributeurs = new ArrayCollection();
         $this->photos = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 
     public function getId(): ?int

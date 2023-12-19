@@ -59,7 +59,7 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function findPhotosForProduct(Product $product)
+    public function findPhotosForProduct(Product $product): Product
     {
         return $this->createQueryBuilder('product')
             ->select('product', 'photo')
