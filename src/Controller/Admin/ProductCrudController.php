@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
-use App\Entity\Reference;
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -45,6 +43,4 @@ class ProductCrudController extends AbstractCrudController
             DateTimeField::new('updatedAt')->onlyOnIndex(),
         ];
     }
-
-
 }
