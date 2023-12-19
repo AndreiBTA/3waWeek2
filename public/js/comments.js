@@ -8,7 +8,7 @@ commentForm.addEventListener('submit', function(event) {
     const formData = new FormData(commentForm);
     let currentUrl = window.location.href;
     console.log(formData);
-    let id = currentUrl.match(/\/(\d+)\/product-details$/)?.[1] || null;
+    let id = currentUrl.match(/\/(\d+)\/show$/)?.[1] || null;
     console.log(id)
     if(id) {
         fetch(this.action, {

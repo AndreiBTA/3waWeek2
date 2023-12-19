@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use function Symfony\Component\Clock\now;
 
 #[Route('/products')]
 class ProductsController extends AbstractController
@@ -91,13 +90,33 @@ class ProductsController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route('/{id}/show', name: 'app_product_show')]
-    public function showProduct(Product $product, ProductRepository $productRepository): Response
+    public function showProduct(Request $request,
+        EntityManagerInterface $entityManager,
+        Product $product,
+        ProductRepository $productRepository,
+        CommentRepository $commentRepository): Response
     {
         $photos = $productRepository->findPhotosForProduct($product)->getPhotos();
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setProduct($product);
+            $product->addComment($comment);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Commend added');
+
+            return new JsonResponse(['success' => true]);
+        }
 
         return $this->render('products/show.html.twig', [
             'product' => $product,
             'photos' => $photos,
+            'form' => $form,
+            'comments' => $commentRepository->findAll(),
         ]);
     }
 
@@ -230,31 +249,5 @@ class ProductsController extends AbstractController
     public function showProductsJson(): Response
     {
         return $this->render('products/products_json.html.twig');
-    }
-
-    #[Route('/{id}/product-details', name: 'app_product_details')]
-    public function showProductDetails(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        Product $product,
-        CommentRepository $commentRepository): Response {
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $comment->setProduct($product);
-            $product->addComment($comment);
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Commend added');
-            return new JsonResponse(['success' => true]);
-        }
-
-        return $this->render('products/product_details.html.twig',  [
-            'product' => $product,
-            'form' => $form,
-            'comments' => $commentRepository->findBy(['id' => $product->getId()]),
-        ]);
     }
 }

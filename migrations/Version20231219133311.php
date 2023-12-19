@@ -20,7 +20,6 @@ final class Version20231219133311 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE comment DROP created_at');
-
     }
 
     public function down(Schema $schema): void
