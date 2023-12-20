@@ -22,22 +22,18 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('products')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
-    #[Groups('products')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank]
-    #[Groups('products')]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Groups('products')]
     private ?float $price = null;
 
     #[ORM\OneToOne(inversedBy: 'product', cascade: ['persist', 'remove'])]
