@@ -16,14 +16,14 @@ class PhotoCrudController extends AbstractCrudController
     {
         return Photo::class;
     }
-
+//TODO photo chemin after webpack
     public function configureFields(string $pageName): iterable
     {
         yield from [
             IdField::new('id')->onlyOnIndex(),
             ImageField::new('name')
-                ->setBasePath('/img')
-                ->setUploadDir('public/img')
+                ->setBasePath('assets/images')
+                ->setUploadDir('public/build/images')
                 ->setFormType(FileUploadType::class),
             //                ->setFormTypeOption('multiple', true)
         ];

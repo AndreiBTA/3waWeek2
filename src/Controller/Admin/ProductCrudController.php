@@ -21,7 +21,7 @@ class ProductCrudController extends AbstractCrudController
     {
         return Product::class;
     }
-
+//TODO photo chemin after webpack
     public function configureFields(string $pageName): iterable
     {
         yield from [
@@ -34,8 +34,8 @@ class ProductCrudController extends AbstractCrudController
             AssociationField::new('reference')->renderAsEmbeddedForm(),
             ImageField::new('photos[0]', 'Images')
                 ->onlyOnIndex()
-                ->setBasePath('/img')
-                ->setUploadDir('/public/img'),
+                ->setBasePath('assets/images')
+                ->setUploadDir('/public/build/images'),
             CollectionField::new('photos')
                 ->onlyOnForms()
                 ->useEntryCrudForm(PhotoCrudController::class),

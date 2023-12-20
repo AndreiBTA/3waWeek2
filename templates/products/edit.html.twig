@@ -10,6 +10,11 @@
             {{ include('products/_form.html.twig')}}
         </div>
     </div>
+{% endblock %}
 
-    <script type="application/javascript" src="{{ asset('js/upload_product_image.js') }}"></script>
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('products-json') }}
+    {{ encore_entry_script_tags('upload-product-image') }}
+
 {% endblock %}

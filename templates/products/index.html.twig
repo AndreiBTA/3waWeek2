@@ -8,8 +8,8 @@
     {% if products|length > 0 %}
         <div class="row mb-5 justify-content-around justify-content-md-start">
             {% for product in products %}
-{#                {{ dump(product) }}#}
-{#                {{ dump(product.photos) }}#}
+                {#                {{ dump(product) }} #}
+                {#                {{ dump(product.photos) }} #}
                 <div class="col-4 my-2">
                     <article class="bg-white rounded shadow">
                         {% for photos in product.photos %}
@@ -18,14 +18,21 @@
                                 <a href="{{ path('app_product_show', {id : product.id}) }}"></a>
                             </div>
                         {% endfor %}
-
                         <div class="p-3">
                             <h2 class="h4"><a href="{{ path('app_product_show', {id : product.id}) }}"
                                               class="text-decoration-none">{{ product.name }}</a></h2>
                             <p class="text-truncate">{{ product.description }}</p>
                             <p>Price : {{ product.price }}</p>
                             <p>Category: {{ product.category }}</p>
+                            <p>Total comments:
+                                {% if(product.comments|length) is same as 0 %}
+                                    <span>No comments yet</span>
+                                {% else %}
+                                    <span>{{ product.comments|length }}</span>
+                                {% endif %}
+                            </p>
                             <p class="text-muted">Created at: {{ product.createdAt|date("d-m-Y") }}</p>
+
                             <p>{{ product.updatedAt ? 'Updated at: ' ~ product.updatedAt|date("d-m-y") : '' }}</p>
                             <a href="{{ path('app_product_show', {id : product.id}) }}" class="btn btn-primary">Read
                                 more</a>

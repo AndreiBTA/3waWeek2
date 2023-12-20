@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your cart{% endblock %}
+
+{% block body %}
+    <div class="bg-white">
+        <h2 class="text-center text-danger mt-3">Your cart</h2>
+        <table class="table table-hover table-striped mt-3 table-dark">
+            <thead>
+                <tr class="table-primary">
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Subtract</th>
+                    <th scope="col">Add</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in cart %}
+                <tr>
+                    <td>{{ order.product.name }}</td>
+                    <td>{{ order.product.category.name }}</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <img src="{{ asset('build/images/' ~ order.product.photos[0].name) }}" width="25%" class="img-fluid mt-2" alt="product photo">
+                        </div>
+                    </td>
+                    <td>{{ order.product.description|raw }}</td>
+                    <td>{{ order.product.price }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.quantity * order.product.price }} €</td>
+                    <td><a href="" class="btn btn-warning">-</a></td>
+                    <td><a href="" class="btn btn-success">+</a></td>
+                    <td><a href="" class="btn btn-danger">Delete</a></td>
+                </tr>
+            {% else %}
+            <tr>
+                <td colspan="10" class="text-danger">Your cart is empty</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3 class="text-success">Total order : {{ total }} €</h3>
+    <a href="" class="btn btn-danger">Empty the cart</a>
+    <hr>
+    <a href="" class="btn btn-succes">Confirm order</a>
+{% endblock %}

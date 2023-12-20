@@ -32,10 +32,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ProductsController extends AbstractController
 {
     #[Route('/', name: 'app_products')]
-    public function showProducts(ProductRepository $productRepository): Response
+    public function showProducts(ProductRepository $productRepository, CommentRepository $commentRepository): Response
     {
-        dump($productRepository);
-
         return $this->render('products/index.html.twig', [
             'products' => $productRepository->findBy([], ['createdAt' => 'DESC'], 12),
         ]);
@@ -91,11 +89,11 @@ class ProductsController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route('/{id}/show', name: 'app_product_show')]
-    public function showProduct(Request                $request,
-                                EntityManagerInterface $entityManager,
-                                Product                $product,
-                                ProductRepository      $productRepository,
-                                CommentRepository      $commentRepository): Response
+    public function showProduct(Request $request,
+        EntityManagerInterface $entityManager,
+        Product $product,
+        ProductRepository $productRepository,
+        CommentRepository $commentRepository): Response
     {
         $photos = $productRepository->findPhotosForProduct($product)->getPhotos();
 
@@ -125,8 +123,8 @@ class ProductsController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request                   $request, Product $product, EntityManagerInterface $em,
-                         ProductPhotoUploadService $productPhotoUploadService, ProductRepository $productRepository): Response
+    public function edit(Request $request, Product $product, EntityManagerInterface $em,
+        ProductPhotoUploadService $productPhotoUploadService, ProductRepository $productRepository): Response
     {
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -190,11 +188,10 @@ class ProductsController extends AbstractController
 
     #[Route('/products-category', name: 'app_products_category')]
     public function showProductsByCategory(
-        Request            $request,
-        ProductRepository  $productRepository,
+        Request $request,
+        ProductRepository $productRepository,
         CategoryRepository $categoryRepository
-    ): Response
-    {
+    ): Response {
         $form = $this->createForm(CategoryType::class);
         $form->handleRequest($request);
 
@@ -246,7 +243,8 @@ class ProductsController extends AbstractController
             return $object->getId();
         }];
         $productsToJson = $serializer->serialize($products, 'json', $context);
-//        dd($productsToJson);
+
+        //        dd($productsToJson);
         return new JsonResponse($productsToJson, Response::HTTP_OK, [], true);
     }
 
