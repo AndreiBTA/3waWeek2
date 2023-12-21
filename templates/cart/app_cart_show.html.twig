@@ -34,9 +34,9 @@
                     <td>{{ order.product.price }}</td>
                     <td>{{ order.quantity }}</td>
                     <td>{{ order.quantity * order.product.price }} €</td>
-                    <td><a href="" class="btn btn-warning">-</a></td>
-                    <td><a href="" class="btn btn-success">+</a></td>
-                    <td><a href="" class="btn btn-danger">Delete</a></td>
+                    <td><a href="{{ path('app_cart_delete', { id: order.product.id }) }}" class="btn btn-warning">-</a></td>
+                    <td><a href="{{ path('app_cart_add', { id: order.product.id }) }}" class="btn btn-success">+</a></td>
+                    <td><a href="{{ path('app_cart_delete_item', {id: order.product.id}) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a></td>
                 </tr>
             {% else %}
             <tr>

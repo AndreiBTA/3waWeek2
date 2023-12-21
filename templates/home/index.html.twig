@@ -13,7 +13,9 @@
         {% if(app.user) %}
             <p>Features unlocked, navigate as you please</p>
             <p>This is the index page. <a href="{{ path('app_products') }}">Go to product list</a></p>
-            <p>Go to : <a href="{{ path('app_products_new') }}">Create product</a></p>
+            <p>Go to: <a href="{{ path('app_cart_show') }}">cart show</a></p>
+
+            <p>Go to : <a href="{{ path('app_products_new') }}">create product</a></p>
             <p>Books filtered desc:  <a href="{{ path('app_products_books')}}" class="">Go</a></p>
             <p>Show one by name : <a href="{{ path('app_products_show_one') }}">Go</a></p>
 

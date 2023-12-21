@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -27,8 +28,8 @@ class ProductCrudController extends AbstractCrudController
         yield from [
             IdField::new('id')->onlyOnIndex(),
             TextField::new('name', 'Product name'),
-            TextEditorField::new('description'),
-            MoneyField::new('price', 'Price')->setCurrency('EUR'),
+            TextareaField::new('description', 'Description')->renderAsHtml(),
+            MoneyField::new('price', 'Price')->setCurrency('EUR')->setCustomOption('storedAsCents', false),
             AssociationField::new('category')->autocomplete(),
             AssociationField::new('distributeurs')->autocomplete(),
             AssociationField::new('reference')->renderAsEmbeddedForm(),
